@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/dustin/go-humanize"
 	"github.com/fatih/color"
 	"github.com/google/uuid"
 	"github.com/kama1ovv/lab4-variant03/pkg/salarycalc"
@@ -21,20 +22,18 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
-	// Ввод имени сотрудника
+	// Ввод данных с клавиатуры
 	fmt.Print("Введите ФИО сотрудника: ")
 	employee, _ := reader.ReadString('\n')
 	employee = strings.TrimSpace(employee)
 
-	// Ввод часов
 	var hours float64
-	fmt.Print("Введите количество отработанных часов (например, 160): ")
+	fmt.Print("Введите количество отработанных часов: ")
 	_, err := fmt.Scan(&hours)
 	if err != nil {
 		log.Fatalf("Ошибка ввода часов: %v", err)
 	}
 
-	// Ввод часовой ставки
 	var rate float64
 	fmt.Print("Введите часовую ставку ($): ")
 	_, err = fmt.Scan(&rate)
@@ -42,7 +41,6 @@ func main() {
 		log.Fatalf("Ошибка ввода ставки: %v", err)
 	}
 
-	// Ввод процента налога
 	var tax float64
 	fmt.Print("Введите процент налога (0-100): ")
 	_, err = fmt.Scan(&tax)
@@ -50,7 +48,6 @@ func main() {
 		log.Fatalf("Ошибка ввода налога: %v", err)
 	}
 
-	// Ввод процента бонуса
 	var bonus float64
 	fmt.Print("Введите процент бонуса (>= 0): ")
 	_, err = fmt.Scan(&bonus)
@@ -84,7 +81,12 @@ func main() {
 	}
 	color.Green("✓ Бонус успешно применен по указателю.")
 
-	// 4. Форматирование и вывод отчета
+	// 4. ДЕМОНСТРАЦИЯ ВТОРОГО ПАКЕТА (go-humanize)
+	// humanize.Commaf добавляет запятые для разделения тысяч (например, 1,234.56)
+	formattedGross := humanize.Commaf(gross)
+	color.Magenta("[Второй пакет go-humanize] Сумма с разделителями: $%s", formattedGross)
+
+	// 5. Форматирование и вывод основного отчета
 	report, err := salarycalc.FormatSalaryReport(employee, gross, net)
 	if err != nil {
 		color.Red("Ошибка FormatSalaryReport: %v", err)
